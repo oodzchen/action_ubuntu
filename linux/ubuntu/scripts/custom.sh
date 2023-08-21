@@ -40,6 +40,8 @@ scripts=(
   rust
   vcpkg
   dotnet
+  postgres
+  chrome
 )
 
 for SCRIPT in "${scripts[@]}"; do
