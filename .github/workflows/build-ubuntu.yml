@@ -1,8 +1,8 @@
 name: Build ubuntu images
 
 on:
-  schedule:
-    - cron: 0 12 */7 * *
+  # schedule:
+  #   - cron: 0 12 */7 * *
   push:
     paths:
       - '.github/workflows/build-ubuntu.yml'
@@ -24,7 +24,7 @@ env:
   BUILD_REF: ${{ github.sha }}
   SKIP_TEST: false
   PUSH_GHCR: ${{ github.repository == (github.event.pull_request.head.repo.full_name || github.repository) && '1' || '' }}
-  PUSH_QUAY: ${{ secrets.QUAY_USER && secrets.QUAY_TOKEN && '1' || '' }}
+  # PUSH_QUAY: ${{ secrets.QUAY_USER && secrets.QUAY_TOKEN && '1' || '' }}
   PUSH_DOCKER_HUB: ${{ secrets.DOCKER_USER && secrets.DOCKER_TOKEN && '1' || '' }}
 
 defaults:
@@ -44,9 +44,9 @@ jobs:
         PLATFORMS:
           - linux/amd64,linux/arm64,linux/arm/v7
         TAG:
-          - latest
+          # - latest
           - 22.04
-          - 20.04
+          # - 20.04
     steps:
       - name: Force SLUG to lowercase
         uses: actions/github-script@v6
@@ -59,9 +59,9 @@ jobs:
         if: env.PUSH_GHCR
         run: exec buildah login -u ${{ github.actor }} -p ${{ github.token }} ghcr.io
 
-      - name: Login to Quay
-        if: env.PUSH_QUAY
-        run: exec buildah login -u ${{ secrets.QUAY_USER }} -p ${{ secrets.QUAY_TOKEN }} quay.io
+      # - name: Login to Quay
+      #   if: env.PUSH_QUAY
+      #   run: exec buildah login -u ${{ secrets.QUAY_USER }} -p ${{ secrets.QUAY_TOKEN }} quay.io
 
       - name: Login to Docker Hub
         if: env.PUSH_DOCKER_HUB
@@ -103,7 +103,6 @@ jobs:
               -push `
               -tags @(
                 ${{ env.PUSH_GHCR && format('''ghcr.io/{0}:{1}''{2}', env.SLUG, env.TAG, (env.PUSH_QUAY || env.PUSH_DOCKER_HUB) && ',' || '') || '' }}
-                ${{ env.PUSH_QUAY && format('''quay.io/{0}:{1}''{2}', env.SLUG, env.TAG, (env.PUSH_DOCKER_HUB) && ',' || '') || '' }}
                 ${{ env.PUSH_DOCKER_HUB && format('''docker.io/{0}:{1}''{2}', env.SLUG, env.TAG, ('') && ',' || '') || '' }}
               )
 
@@ -122,7 +121,6 @@ jobs:
               -push `
               -tags @(
                 ${{ env.PUSH_GHCR && format('''ghcr.io/{0}:{1}''{2}', env.SLUG, env.TAG, (env.PUSH_QUAY || env.PUSH_DOCKER_HUB) && ',' || '') || '' }}
-                ${{ env.PUSH_QUAY && format('''quay.io/{0}:{1}''{2}', env.SLUG, env.TAG, (env.PUSH_DOCKER_HUB) && ',' || '') || '' }}
                 ${{ env.PUSH_DOCKER_HUB && format('''docker.io/{0}:{1}''{2}', env.SLUG, env.TAG, ('') && ',' || '') || '' }}
               )
 
@@ -159,7 +157,6 @@ jobs:
               ${{  '-push' || '' }} `
               -tags @(
                 ${{ env.PUSH_GHCR && format('''ghcr.io/{0}:{1}''{2}', env.SLUG, env.TAG, (env.PUSH_QUAY || env.PUSH_DOCKER_HUB) && ',' || '') || '' }}
-                ${{ env.PUSH_QUAY && format('''quay.io/{0}:{1}''{2}', env.SLUG, env.TAG, (env.PUSH_DOCKER_HUB) && ',' || '') || '' }}
                 ${{ env.PUSH_DOCKER_HUB && format('''docker.io/{0}:{1}''{2}', env.SLUG, env.TAG, ('') && ',' || '') || '' }}
               )
 
@@ -179,7 +176,6 @@ jobs:
               -push `
               -tags @(
                 ${{ env.PUSH_GHCR && format('''ghcr.io/{0}:{1}''{2}', env.SLUG, env.TAG, (env.PUSH_QUAY || env.PUSH_DOCKER_HUB) && ',' || '') || '' }}
-                ${{ env.PUSH_QUAY && format('''quay.io/{0}:{1}''{2}', env.SLUG, env.TAG, (env.PUSH_DOCKER_HUB) && ',' || '') || '' }}
                 ${{ env.PUSH_DOCKER_HUB && format('''docker.io/{0}:{1}''{2}', env.SLUG, env.TAG, ('') && ',' || '') || '' }}
               )
 
@@ -227,9 +223,9 @@ jobs:
         if: env.PUSH_GHCR
         run: exec buildah login -u ${{ github.actor }} -p ${{ github.token }} ghcr.io
 
-      - name: Login to Quay
-        if: env.PUSH_QUAY
-        run: exec buildah login -u ${{ secrets.QUAY_USER }} -p ${{ secrets.QUAY_TOKEN }} quay.io
+      # - name: Login to Quay
+      #   if: env.PUSH_QUAY
+      #   run: exec buildah login -u ${{ secrets.QUAY_USER }} -p ${{ secrets.QUAY_TOKEN }} quay.io
 
       - name: Login to Docker Hub
         if: env.PUSH_DOCKER_HUB
@@ -268,7 +264,6 @@ jobs:
               -push `
               -tags @(
                 ${{ env.PUSH_GHCR && format('''ghcr.io/{0}:{1}''{2}', env.SLUG, env.TAG, (env.PUSH_QUAY || env.PUSH_DOCKER_HUB) && ',' || '') || '' }}
-                ${{ env.PUSH_QUAY && format('''quay.io/{0}:{1}''{2}', env.SLUG, env.TAG, (env.PUSH_DOCKER_HUB) && ',' || '') || '' }}
                 ${{ env.PUSH_DOCKER_HUB && format('''docker.io/{0}:{1}''{2}', env.SLUG, env.TAG, ('') && ',' || '') || '' }}
               )
 
@@ -285,6 +280,5 @@ jobs:
               -push `
               -tags @(
                 ${{ env.PUSH_GHCR && format('''ghcr.io/{0}:{1}''{2}', env.SLUG, env.TAG, (env.PUSH_QUAY || env.PUSH_DOCKER_HUB) && ',' || '') || '' }}
-                ${{ env.PUSH_QUAY && format('''quay.io/{0}:{1}''{2}', env.SLUG, env.TAG, (env.PUSH_DOCKER_HUB) && ',' || '') || '' }}
                 ${{ env.PUSH_DOCKER_HUB && format('''docker.io/{0}:{1}''{2}', env.SLUG, env.TAG, ('') && ',' || '') || '' }}
               )
